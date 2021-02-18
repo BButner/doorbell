@@ -1,6 +1,7 @@
 package com.bbutner.doorbell.service
 
 import org.springframework.stereotype.Service
+import org.springframework.util.FileCopyUtils
 import java.io.File
 import javax.sound.sampled.*
 
@@ -9,7 +10,9 @@ class DoorbellAudioPlayerServiceImpl : DoorbellAudioPlayerService, LineListener 
     var playCompleted: Boolean = false
 
     override suspend fun ringDoorbell() {
-        val audioFile: File = File(DoorbellAudioPlayerServiceImpl::class.java.getResource("/ringtone.wav").toURI())
+//        val audioFile: File = DoorbellAudioPlayerServiceImpl::class.java.getResourceAsStream("/ringtone.wav")
+        val audioFile: File = File.createTempFile("ringtone", ".wav")
+        FileCopyUtils.copy(DoorbellAudioPlayerServiceImpl::class.java.getResourceAsStream("/ringtone.wav"), audioFile.outputStream())
 
         try {
             val audioStream: AudioInputStream = AudioSystem.getAudioInputStream(audioFile)
